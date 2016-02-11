@@ -7,8 +7,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/:data', (request, response) => {
 	//try to make try to make unix date from number
-	console.log('the number is ' + parseInt(request.params.data));
-	date = new Date( parseInt(request.params.data) );
+	date = new Date( parseInt(request.params.data * 1000));
 
 	//if it isn't good
 	if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN( date.getTime() ) ) {
@@ -16,15 +15,18 @@ app.get('/:data', (request, response) => {
 		//try to make natural date from string
 		var date = new Date(request.params.data);
 
-		//if it still doesn't work, return intro page
+		//if it still doesn't work, return null
 		if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN( date.getTime() ) ) 
-			response.sendFile(__dirname + '/public/index.html');
+			response.send({'natural': null,
+										 'unix'   : null});
 	}
 
-	//we have a good date, so process it
-	var dateString = date.toLocaleString('en-US', {month:'long', day:'numeric', year:'numeric'});
-	response.send({'natural': dateString,
-								                'unix'   : date.getTime()});
+	//process our data and return
+	var dateString = (!isNaN(date.getTime())) ? 
+		date.toLocaleString('en-US', {month:'long', day:'numeric', year:'numeric'}) :
+		null;
+	response.send({'natural': dateString, 
+								 'unix'   : parseInt(date.getTime() / 1000)});
 });
 
 app.use( (request, response) => {
