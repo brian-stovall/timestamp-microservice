@@ -40,6 +40,6 @@ app.use( (request, response) => {
 });
 
 
-app.listen('8080');
+app.listen(process.env.port || '8080');
 console.log('timestamp service listening on port 8080');
 
