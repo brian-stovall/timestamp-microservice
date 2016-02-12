@@ -17,13 +17,14 @@ app.get('/:data', (request, response) => {
 
 		//try to make natural date from string
 		var date = new Date(request.params.data);
+	}
 
-		//if it still isn't valid, return null
-		if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN( date.getTime() ) ) {
-			response.write(JSON.stringify({'natural': null,
-										 'unix'   : null}),
+	//if it still isn't valid, return null
+	if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN( date.getTime() ) ) {
+			response.write(JSON.stringify({'unix': null,
+										 'natural'   : null}),
 				             (err) => { response.send();});
-		}
+		
 
 	//otherwise, process our data and return
 	} else {
@@ -31,8 +32,8 @@ app.get('/:data', (request, response) => {
 	var dateString = (!isNaN(date.getTime())) ? 
 		date.toLocaleString('en-US', {month:'long', day:'numeric', year:'numeric'}) :
 		null;
-	response.write(JSON.stringify({'natural': dateString, 
-								 'unix'   : parseInt(date.getTime() / 1000)}),
+	response.write(JSON.stringify({'unix'   : parseInt(date.getTime() / 1000),
+																 'natural': dateString}),
 								 (err) => {response.send();});
 	}
 });
