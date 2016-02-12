@@ -21,18 +21,20 @@ app.get('/:data', (request, response) => {
 		//if it still isn't valid, return null
 		if (Object.prototype.toString.call(date) !== '[object Date]' || isNaN( date.getTime() ) ) {
 			response.write(JSON.stringify({'natural': null,
-										 'unix'   : null}));
-			response.send();
+										 'unix'   : null}),
+				             (err) => { response.send();});
 		}
-	}
 
-	//process our data and return
+	//otherwise, process our data and return
+	} else {
+
 	var dateString = (!isNaN(date.getTime())) ? 
 		date.toLocaleString('en-US', {month:'long', day:'numeric', year:'numeric'}) :
 		null;
 	response.write(JSON.stringify({'natural': dateString, 
-								 'unix'   : parseInt(date.getTime() / 1000)}));
-	response.send();
+								 'unix'   : parseInt(date.getTime() / 1000)}),
+								 (err) => {response.send();});
+	}
 });
 
 app.use( (request, response) => {
